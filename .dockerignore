@@ -1,0 +1,12 @@
+venv/
+__pycache__/
+*/__pycache__/
+.pytest_cache/
+.git/
+tests/
+*.pdf
+*.png
+*.html
+*.xml
+*.txt
+!requirements.txt

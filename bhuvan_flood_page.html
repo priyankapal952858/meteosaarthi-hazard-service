@@ -1,0 +1,162 @@
+<html>
+	<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<style>
+		.layer1 {
+			margin: 0;
+			padding: 0;
+			width: 250px;
+		}	
+		
+		.heading {
+			margin: 1px;
+			padding: 3px 6px;
+			cursor: pointer;
+			position: relative;
+			color:white;
+			background-color:#6495ED;
+		}
+		
+		.content {
+			padding: 5px 10px;
+			background-color:#EBF1F5;
+		}
+		
+		p { padding: 0px 0; } 
+	</style>
+	<link rel="stylesheet" href="../../theme/default/style.css" type="text/css" />
+	<link rel="stylesheet" href="../../theme/default/jquery-ui-1.7.2.custom.css" type="text/css"> 
+	<body onunload="uninit()" onload="init()" width="100%" style="margin:0px">
+	<div class="layer1">
+
+	<p id="t5" class="heading"><img id='expandt5' style='margin-top:2px' valign="center" align='left' src='../../img/sliderDec.png'>&nbsp;&nbsp;<b>Flood Hazard Zones</b> </p>
+	<div class="content">
+	<table border="0" cellpadding="0" cellspacing="0" class="s8" width="100%" style="background-color: #cad8e2"><tr><td>
+	<p align="justify">The maximum flood inundation layers corresponding to various years <span id="fldhz_yr">(1998-2019)</span> were integrated for assessing the frequency of inundation and subsequent generation of hazard layer</p><br/>
+	<span class="s10b"><b>State</b>   &nbsp;&nbsp;          
+	<select id='states_hzm' onchange="remove_hzm(); updateTechDocName();">
+
+	
+	<option  value='ap_76.508_12.471_85.187_19.318_28'>Andhra Pradesh</option>
+		<option  value='as_89.701_24.135_96.021_27.977_18'>Assam</option>
+		<option selected value='br_80.8568_23.0009_90.4173_29.0341_10'>Bihar</option>
+		<option value='or_82.922_18.202_87.838_22.682_21'>Odisha</option>	
+		<option value='up_77.08_24.99_84.67_30.12_09'>Uttar Pradesh</option>
+		<option value='wb_85.558_21.383_90.03_27.33_19'>West Bengal</option>
+	<!--<option  value='as_89.701_24.135_96.021_27.977_18'>Assam</option>
+	<option selected value='br_80.8568_23.0009_90.4173_29.0341_10'>Bihar</option>
+	<option value='or_82.922_18.202_87.838_22.682_21'>Odisha</option> -->
+	
+	
+	<!--
+	<option  value='up_77.08_24.99_84.67_30.12_09'>Uttar Pradesh</option>
+	-->
+
+	</select></span>
+	<br/>
+	<div id="districtsdiv" style="display:none"></div> 
+	<div id="villagediv" style="display:none">
+	<br/><input  style="display:none" type="checkbox" onclick="if(this.checked) vil_view(); else vil_remove();" /> Village Boundary	<br/>
+	&nbsp;<a style="cursor:pointer;display:none" onclick="load_hzvill()"><b><u>Hazard Villages</u></b></a> <br/>
+	</div> 
+	<br/>
+	<img src="img/view.png" id="hzm_view" Title="Click to View Map" style="cursor:pointer" onclick="if(this.src.match('view')=='view') { view_hzm()} else { remove_hzm() } "/>  &nbsp;&nbsp; <a  title="Click here for statistics,analysis,metadata and webservices" onclick="hzm_moreinfo()" id="moreinfo" style="cursor:pointer;display:none"><b><u>Statistics</u></b></a><a  title="Click here for metadata" onclick="hzm_moreinfo1()" id="moreinfo1" style="cursor:pointer;display:none"><b><u>Metadata</u></b></a>
+
+	</td></tr></table>
+	<div id="hzmatlas" style="display:none">
+	<!--<span id = "hzm_mapdiv" style="display:none"><br/>	<b>Map(jpg)</b>&nbsp;<a id="hzm_map" style="cursor: pointer" target="_blank" href=""><img border="0" src="img/download.gif" alt="Download Map, size : 5MB"></a> </span>-->
+	<br/>	<b>Atlas</b>&nbsp;<a id="hzm_atlas" style="cursor: pointer" target="_blank" href=""><img  border="0" src="img/download.gif" alt="Download PDF, size : 20MB"></a> <br/>
+
+
+	</div>
+	<div id="hzmdiv" style="display:none">
+	<!--<span id = "hzm_mapdiv" style="display:none"><br/>	<b>Map(jpg)</b>&nbsp;<a id="hzm_map" style="cursor: pointer" target="_blank" href=""><img border="0" src="img/download.gif" alt="Download Map, size : 5MB"></a> </span>-->
+	<b id="techdoc_label">Flood Hazard Atlas</b>&nbsp;
+<a id="hzm_techdoc" style="cursor: pointer" target="_blank" href=""><img  border="0" src="img/download.gif" alt="Download PDF, size : 2.3MB"></a> <br/>
+	<br/>
+	<img id="legend"  src="" /><img id="legend_1" src="" />
+	<br/><img id="legend_2" src="" />
+
+	</div>
+<p style="text-align:justify; font-family: Arial; font-size: 12px; color: red"><b>Disclaimer:</b> The Flood hazard zonation is subjected to availability of satellite datasets during floods. The satellite coverage may not correspond to the peak flooding in all cases. Observed flood inundation may include flooding due to embankment breaches and also due to rainwater accumulation in low lying areas. Flash Flood and Minor Flooding may not have been captured.</p>
+ 
+	</div>
+	<script>
+function updateTechDocName() {
+	const select = document.getElementById("states_hzm");
+	const selectedState = select.options[select.selectedIndex].text;
+	document.getElementById("techdoc_label").textContent = "Flood Hazard Atlas - " + selectedState;
+}
+window.onload = function() {
+	updateTechDocName(); // Set initial name on load
+}
+</script>
+
+
+	<p id="t6" class="heading"><img id='expandt6' style='margin-top:2px' valign="center" align='left' src='../../img/sliderDec.png'>&nbsp;&nbsp;<b>Aggregated State Level Flood Maps (2003-2020)</b> </p>
+
+	<div class="content">
+		<div id="pluslevel6101" style="overflow: auto;">
+			<img src="img/plus.bmp" onclick='handleClick("pluslevel6101","minuslevel6101");'>&nbsp;State Level Aggregated Flood Maps (2003-2020)
+		</div>																			
+		
+		<div id="minuslevel6101" style="display:none;overflow: auto;">
+			<img src="img/minus.bmp" onclick='handleClick("minuslevel6101","pluslevel6101")'>&nbsp;State Level Aggregated Flood Maps (2003-2020)  &nbsp;&nbsp;&nbsp;<br/>
+			
+			<!--
+			&nbsp;&nbsp;&nbsp;<input type="checkbox" onclick='if(this.checked) parent.loadmap("if1","https://bhuvan-ras2.nrsc.gov.in/mapcache?","intwater"); else parent.removelayer("if1");' >India&nbsp;&nbsp;<img onclick="parent.map.setCenter(new parent.OpenLayers.LonLat(77,23), 8);" style="cursor:pointer" title="Click here to zoom" src="img/zoomto.png"><br/>
+			-->
+			
+			&nbsp;&nbsp;&nbsp;<input type="checkbox" onclick='if(this.checked) parent.loadmap("if8","https://bhuvan-ras2.nrsc.gov.in/mapcache?","agg_ar"); else parent.removelayer("if8");' >Arunachal Pradesh&nbsp;&nbsp;<img onclick="parent.map.setCenter(new parent.OpenLayers.LonLat(95.88, 27.19), 4);" style="cursor:pointer" title="Click here to zoom" src="img/zoomto.png"><br/>
+			
+			&nbsp;&nbsp;&nbsp;<input type="checkbox" onclick='if(this.checked) parent.loadmap("if2","https://bhuvan-ras2.nrsc.gov.in/mapcache?","agg_gujarat"); else parent.removelayer("if2");' >Gujarat&nbsp;&nbsp;<img onclick="parent.map.setCenter(new parent.OpenLayers.LonLat(72,22.5), 3);" style="cursor:pointer" title="Click here to zoom" src="img/zoomto.png"><br/>
+			
+			&nbsp;&nbsp;&nbsp;<input type="checkbox" onclick='if(this.checked) parent.loadmap("if3","https://bhuvan-ras2.nrsc.gov.in/mapcache?","agg_jk"); else parent.removelayer("if3");' >Jammu & Kashmir&nbsp;&nbsp;<img onclick="parent.map.setCenter(new parent.OpenLayers.LonLat(74.7,34), 5);" style="cursor:pointer" title="Click here to zoom" src="img/zoomto.png"><br/>
+			
+			&nbsp;&nbsp;&nbsp;<input type="checkbox" onclick='if(this.checked) parent.loadmap("if4","https://bhuvan-ras2.nrsc.gov.in/mapcache?","agg_karnataka"); else parent.removelayer("if4");' >Karnataka&nbsp;&nbsp;<img onclick="parent.map.setCenter(new parent.OpenLayers.LonLat(76,15), 2);" style="cursor:pointer" title="Click here to zoom" src="img/zoomto.png"><br/>
+			
+			&nbsp;&nbsp;&nbsp;<input type="checkbox" onclick='if(this.checked) parent.loadmap("if5","https://bhuvan-ras2.nrsc.gov.in/mapcache?","agg_kerala"); else parent.removelayer("if5");' >Kerala&nbsp;&nbsp;<img onclick="parent.map.setCenter(new parent.OpenLayers.LonLat(76,10), 3);" style="cursor:pointer" title="Click here to zoom" src="img/zoomto.png"><br/>
+			
+			&nbsp;&nbsp;&nbsp;<input type="checkbox" onclick='if(this.checked) parent.loadmap("if6","https://bhuvan-ras2.nrsc.gov.in/mapcache?","agg_maharashtra"); else parent.removelayer("if6");' >Maharashtra&nbsp;&nbsp;<img onclick="parent.map.setCenter(new parent.OpenLayers.LonLat(77,19), 2);" style="cursor:pointer" title="Click here to zoom" src="img/zoomto.png"><br/>
+			
+			&nbsp;&nbsp;&nbsp;<input type="checkbox" onclick='if(this.checked) parent.loadmap("if7","https://bhuvan-ras2.nrsc.gov.in/mapcache?","agg_tamilnadu"); else parent.removelayer("if7");' >Tamil Nadu&nbsp;&nbsp;<img onclick="parent.map.setCenter(new parent.OpenLayers.LonLat(78,11), 2);" style="cursor:pointer" title="Click here to zoom" src="img/zoomto.png"><br/>
+			
+		</div>			
+		<!--	
+		<input type="checkbox" onclick='if(this.checked) parent.loadmap("iftsn","https://bhuvan-ras2.nrsc.gov.in/mapcache?","tsunami"); else parent.removelayer("iftsn");'>Tsunami&nbsp;<img onclick="parent.map.setCenter(new parent.OpenLayers.LonLat(79.84, 10.91), 5);" style="cursor:pointer" title="Click here to zoom" src="img/zoomto.png"><br/>
+
+		<input type="checkbox" onclick='if(this.checked) parent.loadmap("ifcyc","https://bhuvan-ras2.nrsc.gov.in/mapcache?","cyclone"); else parent.removelayer("ifcyc");' >Cyclone&nbsp;<img onclick="parent.map.setCenter(new parent.OpenLayers.LonLat(80.48,16.04), 5);" style="cursor:pointer" title="Click here to zoom" src="img/zoomto.png"><br/> -->
+		<b>Technical document</b>&nbsp;<a style="cursor: pointer" target="_blank" href="doc/AggFld_TechDoc.pdf"><img  border="0" src="img/download.gif" alt="Download PDF, size : 2.3MB"></a>
+		<br/>
+		<p style="text-align:justify; font-family: Arial; font-size: 12px; color: red"><b>Disclaimer:</b> State level Aggregated flood maps are prepared using the available historic flood maps derived from satellite datasets. It is based on the satellite data pass and its swath during the floods. Hence, actual flooded area may be more than this.</p>
+
+	</div>
+
+
+
+
+
+	  <br/>
+	  <div style="float:right">
+	<img onclick="parent.load_video('#feedback','get/loading_feedback.php?q=feedback.php&id=Flood','Feedback','505','595')" src="../../img/feedback1.png" title="Feedback" style="cursor:pointer;"/>&nbsp;<img onclick="parent.load_video('#notify','get/loading_feedback.php?q=notify.php&id=Flood','Notify','505','390')" src="../../img/notify.png" title="Notification" style="cursor:pointer;"/>
+
+	<a href ="../../disaster/get/feed/flood.xml" target="_blank"> <img src="../../img/prev/rss.png"> </a>
+
+
+
+	</div>
+	<script src="../../lib/jquerynew.js"></script> 
+	<script src="js/v16.js"></script> 
+	<script>
+		$(document).ready(function() 
+		{
+			$("#t5").click();
+		});
+	</script>
+
+
+
+	</body>
+
+
+	</html>

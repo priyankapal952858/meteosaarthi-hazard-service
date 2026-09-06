@@ -1,0 +1,60 @@
+{
+  "_metadata": {
+    "source": "Flood Affected Area Atlas of India (1998-2022) - Satellite based Study, NRSC/ISRO",
+    "source_url": "https://ndem.nrsc.gov.in/documents/downloads/Flood%20Affected%20Area%20Atlas%20of%20India%20-Satellite%20based%20study.pdf",
+    "coverage_note": "This service's data was built from two levels of the same atlas: (1) Table 5.1, the national summary table (24 states), and (2) individual per-state chapters, which cover 26 states in total (Chapters 6-31). One state present in a chapter but absent from Table 5.1 (Tripura) was added from its own chapter. Any state or union territory not covered by this atlas at all, or without a district-level table, is marked 'unavailable' below and must never be assumed to have zero risk.",
+    "data_type": "historical_cumulative",
+    "data_period": "1998-2022",
+    "important_disclaimer": "This is historical satellite-derived cumulative flood-affected area data, NOT real-time flooding and NOT a flood forecast. It represents areas that have been inundated at least once during 1998-2022.",
+    "extraction_note": "Values were extracted via automated text extraction from the source PDF. The West Bengal row in Table 5.1 in particular was affected by overlapping page text during extraction and should be independently verified against the source PDF before being relied upon for any production decision.",
+    "known_gaps": {
+      "Himachal Pradesh": "Has a dedicated chapter (14) in the atlas, but that chapter contains no district-wise flood-affected-area table — only descriptive/narrative text. This is a genuine absence of quantified data in the source, not an extraction failure. Treated as 'unavailable' below.",
+      "states_not_in_atlas_at_all": "States/UTs with no chapter in this atlas whatsoever (e.g. Goa, Mizoram, Nagaland, Sikkim, Chandigarh, Puducherry, Ladakh, Andaman & Nicobar Islands, Lakshadweep, Dadra & Nagar Haveli and Daman & Diu) are not listed in state_stats below and will correctly return 'unavailable' from this service."
+    }
+  },
+  "national_totals": {
+    "total_districts_affected": 435,
+    "total_flood_affected_area_ha": 15750723
+  },
+  "state_stats": {
+    "Andhra Pradesh":     { "districts_affected": 24, "flood_affected_area_ha": 738200 },
+    "Arunachal Pradesh":  { "districts_affected": 5,  "flood_affected_area_ha": 3373 },
+    "Assam":              { "districts_affected": 35, "flood_affected_area_ha": 2464958 },
+    "Bihar":              { "districts_affected": 38, "flood_affected_area_ha": 3976861 },
+    "Chhattisgarh":       { "districts_affected": 12, "flood_affected_area_ha": 12029 },
+    "Delhi":              { "districts_affected": 7,  "flood_affected_area_ha": 5848 },
+    "Gujarat":            { "districts_affected": 16, "flood_affected_area_ha": 517770 },
+    "Haryana":            { "districts_affected": 9,  "flood_affected_area_ha": 67852 },
+    "Jammu & Kashmir":    { "districts_affected": 10, "flood_affected_area_ha": 43022 },
+    "Jharkhand":          { "districts_affected": 2,  "flood_affected_area_ha": 2966 },
+    "Karnataka":          { "districts_affected": 26, "flood_affected_area_ha": 280156 },
+    "Kerala":             { "districts_affected": 10, "flood_affected_area_ha": 79377 },
+    "Madhya Pradesh":     { "districts_affected": 30, "flood_affected_area_ha": 210809 },
+    "Maharashtra":        { "districts_affected": 20, "flood_affected_area_ha": 233590 },
+    "Manipur":            { "districts_affected": 9,  "flood_affected_area_ha": 88352 },
+    "Meghalaya":          { "districts_affected": 2,  "flood_affected_area_ha": 8787 },
+    "Odisha":             { "districts_affected": 23, "flood_affected_area_ha": 1424313 },
+    "Punjab":             { "districts_affected": 15, "flood_affected_area_ha": 142692 },
+    "Rajasthan":          { "districts_affected": 10, "flood_affected_area_ha": 155144 },
+    "Tamil Nadu":         { "districts_affected": 24, "flood_affected_area_ha": 552010 },
+    "Telangana":          { "districts_affected": 14, "flood_affected_area_ha": 102318 },
+    "Tripura":            { "districts_affected": 4,  "flood_affected_area_ha": 3928, "source_note": "From atlas Chapter 28 (Table.28.2); not present in the national summary Table 5.1." },
+    "Uttar Pradesh":      { "districts_affected": 72, "flood_affected_area_ha": 2662942 },
+    "Uttarakhand":        { "districts_affected": 2,  "flood_affected_area_ha": 7604 },
+    "West Bengal":        { "districts_affected": 20, "flood_affected_area_ha": 1969750 }
+  },
+  "district_level_severity_buckets_ha": {
+    "note": "From Table 5.2 of the same atlas — district-level flood-affected-area buckets, used here as the basis for this service's severity classification thresholds (see app/flood_hazard.py).",
+    "buckets": [
+      { "min_ha": 200000, "max_ha": null,   "districts_in_bucket": 12 },
+      { "min_ha": 150000, "max_ha": 200000, "districts_in_bucket": 11 },
+      { "min_ha": 100000, "max_ha": 150000, "districts_in_bucket": 34 },
+      { "min_ha": 50000,  "max_ha": 100000, "districts_in_bucket": 50 },
+      { "min_ha": 25000,  "max_ha": 50000,  "districts_in_bucket": 48 },
+      { "min_ha": 10000,  "max_ha": 25000,  "districts_in_bucket": 66 },
+      { "min_ha": 5000,   "max_ha": 10000,  "districts_in_bucket": 52 },
+      { "min_ha": 1000,   "max_ha": 5000,   "districts_in_bucket": 76 },
+      { "min_ha": 100,    "max_ha": 1000,   "districts_in_bucket": 86 }
+    ]
+  }
+}
