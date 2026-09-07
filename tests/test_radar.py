@@ -7,7 +7,7 @@ as a non-integrated rainfall substitute rather than claiming to be
 real radar imagery.
 """
 
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 from app.radar import (
     classify_rainfall,
@@ -123,3 +123,47 @@ class TestProcessRadarData:
         result = process_radar_data(19.0, 72.0)
 
         assert result["status"] == "error"
+
+    @patch("app.radar.MOSDAC_RADAR_TOKEN", "approved-token")
+    @patch("app.radar.MOSDAC_RADAR_URL", "https://mosdac.example/radar")
+    @patch("app.radar.requests.get")
+    def test_uses_configured_mosdac_radar_image(self, mock_get):
+        response = Mock()
+        response.headers = {"Content-Type": "image/png"}
+        response.content = b"radar-image"
+        mock_get.return_value = response
+
+        result = process_radar_data(19.0, 72.0)
+
+        assert result["status"] == "success"
+        assert result["radar"]["integration_status"] == "integrated"
+        assert result["radar"]["available"] is True
+        assert result["radar"]["source"] == "MOSDAC"
+        assert result["radar"]["data_type"] == "radar_imagery"
+        assert result["radar"]["image_base64"] == "cmFkYXItaW1hZ2U="
+        assert mock_get.call_args.kwargs["params"] == {"lat": 19.0, "lon": 72.0}
+        assert mock_get.call_args.kwargs["headers"] == {
+            "Authorization": "Bearer approved-token"
+        }
+
+    @patch("app.radar.MOSDAC_RADAR_URL", "https://mosdac.example/radar")
+    @patch("app.radar.requests.get")
+    @patch("app.radar.get_rainfall_from_open_meteo")
+    @patch("app.radar.get_current_rainfall", return_value=12.0)
+    def test_falls_back_when_mosdac_returns_non_image(
+        self, mock_get_current, mock_get_rainfall, mock_get
+    ):
+        response = Mock()
+        response.headers = {"Content-Type": "application/json"}
+        response.content = b"{}"
+        mock_get.return_value = response
+        mock_get_rainfall.return_value = {
+            "status": "success",
+            "hourly": {"time": [], "rainfall_mm": []}
+        }
+
+        result = process_radar_data(19.0, 72.0)
+
+        assert result["status"] == "success"
+        assert result["radar"]["available"] is False
+        assert result["radar"]["source"] == "Open-Meteo"

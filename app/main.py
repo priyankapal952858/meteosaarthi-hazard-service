@@ -16,7 +16,8 @@ from app.gis import (
 
 from app.radar import (
     process_radar_data,
-    process_rainfall
+    process_rainfall,
+    RADAR_INTEGRATION_STATUS
 )
 
 from app.rainfall_data import (
@@ -155,10 +156,9 @@ def capabilities():
                     "rainfall",
                     "intensity"
                 ],
-                "integration_status": "not_integrated",
-                "data_source": "Open-Meteo rainfall data used as a substitute signal; "
-                                "real radar imagery integration is pending access to "
-                                "IMD's registered Radar Image API"
+                "integration_status": RADAR_INTEGRATION_STATUS,
+                "data_source": "Configured MOSDAC radar imagery with Open-Meteo "
+                                "rainfall fallback"
             },
 
             "/maps/rainfall": {

@@ -55,6 +55,23 @@ GET /alerts?lat=19.076&lon=72.8777&rainfall=10
 substitute. Genuine IMD radar imagery requires an approved IMD provider
 endpoint and access details.
 
+### MOSDAC radar configuration
+
+After MOSDAC provides the approved radar-image endpoint and token, configure
+the service before starting it:
+
+```powershell
+$env:MOSDAC_RADAR_URL = "https://<approved-mosdac-endpoint>"
+$env:MOSDAC_RADAR_TOKEN = "<approved-token>"
+.\start_staging.ps1
+```
+
+The adapter sends `lat` and `lon` query parameters and expects an `image/*`
+response. A successful response is returned as base64 image data with
+`source: "MOSDAC"` and `data_type: "radar_imagery"`. If the endpoint is
+missing, fails, or returns a non-image response, the service uses the
+clearly labeled Open-Meteo rainfall fallback. Do not commit the token.
+
 ## Run tests
 
 ```powershell
