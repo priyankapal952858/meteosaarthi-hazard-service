@@ -77,6 +77,24 @@ clearly labeled Open-Meteo rainfall fallback. Do not commit the token.
 The service uses two different kinds of flood-related information. They must
 not be interpreted as the same measurement.
 
+### Live detection used by the service
+
+The service is not limited to the historical 1998-2022 atlas. Its current
+hazard detection can use:
+
+- **Current rainfall:** fetched from Open-Meteo when the request does not
+  include a manual rainfall value.
+- **Current river-discharge anomaly:** fetched from the Open-Meteo Flood API
+  for locations where the primary atlas has no state-level data. The latest
+  discharge is compared with the previous 30-day mean.
+- **Real radar imagery:** fetched from MOSDAC when the approved live or
+  standing-request radar endpoint is configured with `MOSDAC_RADAR_URL` and
+  `MOSDAC_RADAR_TOKEN`.
+
+If MOSDAC live radar access is not configured or temporarily fails, the radar
+endpoint uses the clearly labeled Open-Meteo rainfall fallback. It never
+claims that rainfall data is radar imagery.
+
 ### Primary historical atlas coverage
 
 The NRSC/ISRO Flood Affected Area Atlas provides historical cumulative flood
@@ -90,8 +108,9 @@ Rajasthan, Tamil Nadu, Telangana, Tripura, Uttar Pradesh, Uttarakhand,
 West Bengal
 ```
 
-This atlas covers the period 1998-2022. It is historical context, not live
-flood detection, a current flood observation, or a forecast.
+This atlas covers the period 1998-2022. It is historical context used to
+strengthen risk assessment; it is not live flood detection, a current flood
+observation, or a forecast.
 
 ### Backup coverage for other states/UTs
 
