@@ -72,6 +72,53 @@ response. A successful response is returned as base64 image data with
 missing, fails, or returns a non-image response, the service uses the
 clearly labeled Open-Meteo rainfall fallback. Do not commit the token.
 
+## Flood and live-signal coverage
+
+The service uses two different kinds of flood-related information. They must
+not be interpreted as the same measurement.
+
+### Primary historical atlas coverage
+
+The NRSC/ISRO Flood Affected Area Atlas provides historical cumulative flood
+affected-area data for these 25 states/UTs:
+
+```text
+Andhra Pradesh, Arunachal Pradesh, Assam, Bihar, Chhattisgarh, Delhi,
+Gujarat, Haryana, Jammu & Kashmir, Jharkhand, Karnataka, Kerala,
+Madhya Pradesh, Maharashtra, Manipur, Meghalaya, Odisha, Punjab,
+Rajasthan, Tamil Nadu, Telangana, Tripura, Uttar Pradesh, Uttarakhand,
+West Bengal
+```
+
+This atlas covers the period 1998-2022. It is historical context, not live
+flood detection, a current flood observation, or a forecast.
+
+### Backup coverage for other states/UTs
+
+When the detected location is outside the primary list, the service calls the
+Open-Meteo Flood API using the latitude and longitude. It compares the latest
+river discharge with the previous 30-day mean and returns a
+`river_discharge_anomaly` signal when data is available.
+
+The backup can be used for locations such as Goa, Himachal Pradesh, Mizoram,
+Nagaland, Sikkim, Puducherry, Ladakh, Chandigarh, Andaman & Nicobar Islands,
+Lakshadweep, and Dadra & Nagar Haveli and Daman & Diu. Coverage depends on
+the backup API having river-discharge data for the requested coordinates.
+
+The backup signal is current/near-real-time context, not historical
+flood-affected hectares. If the state cannot be detected or the backup API
+fails, the response remains honest and reports flood data as unavailable.
+
+### What “live” means in this service
+
+- Rainfall is fetched from Open-Meteo when the client does not provide it.
+- The backup provider supplies a current river-discharge comparison where
+  primary atlas data is unavailable.
+- Primary atlas values are never presented as live measurements.
+- MOSDAC radar imagery is used only when its approved endpoint and token are
+  configured; otherwise `/maps/radar` uses a clearly labeled rainfall
+  fallback.
+
 ## Run tests
 
 ```powershell
