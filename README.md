@@ -138,6 +138,33 @@ fails, the response remains honest and reports flood data as unavailable.
   configured; otherwise `/maps/radar` uses a clearly labeled rainfall
   fallback.
 
+### Part 3 live-detection summary
+
+For the GIS/Radar/Hazard responsibility, the service provides:
+
+- **Live rainfall detection:** current hourly rainfall and intensity from
+  Open-Meteo.
+- **Live risk calculation:** current rainfall combined with available flood
+  context.
+- **Live hazard detection:** heavy-rainfall detection and elevated
+  river-discharge anomaly detection.
+- **Live alerts:** user-facing alerts generated from the detected hazards.
+- **Live backup flood signal:** latest river discharge compared with the
+  previous 30-day mean for locations outside primary atlas coverage.
+- **Live radar imagery:** available only after the approved MOSDAC
+  live/standing-request endpoint and token are configured.
+
+The following are not live measurements:
+
+- NRSC/ISRO flood atlas data from 1998-2022.
+- GIS state boundaries used to identify the location's state.
+- Historical flood-affected hectare and district statistics.
+
+Therefore, the service currently supports live rainfall-based hazard
+detection. Genuine live radar detection is implemented through a MOSDAC
+adapter, but remains inactive until the approved MOSDAC endpoint and access
+credentials are configured.
+
 ## Run tests
 
 ```powershell
