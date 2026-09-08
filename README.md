@@ -49,11 +49,36 @@ GET /capabilities
 GET /maps/risk?lat=19.076&lon=72.8777&rainfall=10
 GET /maps/radar?lat=19.076&lon=72.8777
 GET /alerts?lat=19.076&lon=72.8777&rainfall=10
+POST /alerts/test-sms?phone_number=+919876543210&message=Prototype%20SMS%20test
 ```
 
 `/maps/radar` currently returns Open-Meteo rainfall as a clearly disclosed
 substitute. Genuine IMD radar imagery requires an approved IMD provider
 endpoint and access details.
+
+## Prototype SMS testing
+
+The service includes a prototype SMS flow for testing delivery to one trusted
+team member before connecting a farmer contact list. It uses Fast2SMS when a
+valid API key is configured. The API key is read from the environment and
+must never be committed to GitHub.
+
+In PowerShell, set the key in the same terminal that starts the service:
+
+```powershell
+$env:FAST2SMS_API_KEY = "<your-fast2sms-api-key>"
+uvicorn app.main:app --host 127.0.0.1 --port 8000
+```
+
+Open `http://127.0.0.1:8000/docs`, choose `POST /alerts/test-sms`, enter a
+trusted team member's phone number and test message, then select **Execute**.
+The number may be entered as `9876543210` or `+919876543210`.
+
+The response reports whether delivery was successful, disabled because the
+API key is missing, or rejected by the provider. A successful provider
+response means the gateway accepted the request; confirm final delivery on
+the recipient's phone. This endpoint is for internal testing only, not for
+broadcasting to farmers.
 
 ### MOSDAC radar configuration
 
