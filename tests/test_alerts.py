@@ -3,7 +3,7 @@ Tests for app.alerts.
 """
 
 from app.alerts import generate_alerts, build_farmer_sms_message
-from app.sms import normalize_phone_number, send_sms
+from app.sms import normalize_phone_number, send_sms, send_test_sms
 
 
 class TestGenerateAlerts:
@@ -78,3 +78,8 @@ class TestFarmerSmsMessages:
     def test_send_sms_returns_disabled_when_no_provider_configured(self):
         result = send_sms("9876543210", "Test alert", provider="fast2sms", api_key=None)
         assert result["status"] == "disabled"
+
+    def test_send_test_sms_returns_prototype_status(self):
+        result = send_test_sms("9876543210", "Prototype test message")
+        assert result["mode"] == "prototype"
+        assert result["phone_number"] == "+919876543210"

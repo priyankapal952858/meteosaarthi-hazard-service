@@ -28,7 +28,7 @@ from app.rainfall_data import (
 from app.alerts import generate_alerts, build_farmer_sms_message
 
 from app.flood_hazard import get_flood_baseline
-from app.sms import normalize_phone_number, send_sms
+from app.sms import normalize_phone_number, send_sms, send_test_sms
 
 
 app = FastAPI(
@@ -498,6 +498,29 @@ def send_farmer_sms(
         "sms": {
             "phone_number": normalize_phone_number(phone_number),
             "message": sms_text,
+            "delivery": sms_result,
+        },
+    }
+
+
+@app.post("/alerts/test-sms")
+def prototype_test_sms(
+    request: Request,
+    phone_number: str = Query(..., description="Trusted team member phone number"),
+    message: str = Query("Prototype SMS test from MeteoSaarthi", description="Test SMS text")
+):
+    """
+    Prototype-only mode for validating that a real SMS can be delivered to a
+    trusted team member. This is intended for testing and should not be used
+    for production farmer broadcasts.
+    """
+    sms_result = send_test_sms(phone_number, message)
+    return {
+        "status": "success",
+        "mode": "prototype",
+        "sms": {
+            "phone_number": normalize_phone_number(phone_number),
+            "message": message,
             "delivery": sms_result,
         },
     }

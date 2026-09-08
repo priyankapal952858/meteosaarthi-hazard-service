@@ -100,6 +100,26 @@ def send_sms(
         }
 
 
+def send_test_sms(phone_number: str, message: str = "Prototype SMS test from MeteoSaarthi") -> Dict[str, Any]:
+    """
+    Prototype-mode testing helper for sending to a trusted team member number.
+    This is intended only for validation and should not be used for real
+    production broadcasts.
+    """
+    normalized = normalize_phone_number(phone_number)
+    if not normalized:
+        return {
+            "status": "error",
+            "message": "Invalid phone number.",
+            "mode": "prototype",
+        }
+
+    result = send_sms(normalized, message)
+    result.setdefault("mode", "prototype")
+    result.setdefault("phone_number", normalized)
+    return result
+
+
 def build_farmer_sms_message(alerts: List[Dict[str, Any]], state_name: Optional[str] = None) -> str:
     """
     Build a farmer-friendly SMS message from hazard alerts.
