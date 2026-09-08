@@ -49,6 +49,7 @@ GET /capabilities
 GET /maps/risk?lat=19.076&lon=72.8777&rainfall=10
 GET /maps/radar?lat=19.076&lon=72.8777
 GET /alerts?lat=19.076&lon=72.8777&rainfall=10
+POST /alerts/send-sms?phone_number=+919876543210&lat=19.076&lon=72.8777&rainfall=10
 POST /alerts/test-sms?phone_number=+919876543210&message=Prototype%20SMS%20test
 ```
 
@@ -79,6 +80,18 @@ API key is missing, or rejected by the provider. A successful provider
 response means the gateway accepted the request; confirm final delivery on
 the recipient's phone. This endpoint is for internal testing only, not for
 broadcasting to farmers.
+
+## Normal farmer SMS alerts
+
+The normal alert flow calculates rainfall and flood risk for a location,
+generates a farmer-friendly message, and sends it through Fast2SMS to the
+provided farmer number using `POST /alerts/send-sms`. The API key must be set
+in `FAST2SMS_API_KEY`. Without the key, the response is safely marked
+`disabled` and no SMS is sent.
+
+This endpoint currently sends to one supplied number. Automatic district or
+village-wide broadcasting requires connecting a consented farmer contact list
+and filtering it by the affected location.
 
 ### MOSDAC radar configuration
 
