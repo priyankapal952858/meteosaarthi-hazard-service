@@ -25,9 +25,10 @@ from app.rainfall_data import (
     get_current_rainfall
 )
 
-from app.alerts import generate_alerts
+from app.alerts import generate_alerts, build_farmer_sms_message
 
 from app.flood_hazard import get_flood_baseline
+from app.sms import normalize_phone_number, send_sms
 
 
 app = FastAPI(
@@ -444,4 +445,59 @@ def current_alerts(
         "flood_hazard": flood_baseline,
 
         "alerts": alerts
+    }
+
+
+@app.post("/alerts/send-sms")
+def send_farmer_sms(
+    request: Request,
+    phone_number: str = Query(..., description="Farmer phone number"),
+    lat: float = Query(..., description="Latitude"),
+    lon: float = Query(..., description="Longitude"),
+    rainfall: float = Query(None, description="Rainfall in mm/hour")
+):
+    """
+    Prepare and optionally send a farmer-targeted SMS based on current hazard
+    alert data. This feature remains safe and offline-friendly: if no SMS API
+    key is configured, it returns the planned SMS content without sending.
+    """
+    rainfall_source = "manual"
+
+    if rainfall is None:
+        rainfall_data = get_rainfall_from_open_meteo(lat, lon)
+        if rainfall_data["status"] == "error":
+            return _with_trace(rainfall_data, request)
+        rainfall = get_current_rainfall(rainfall_data["hourly"])
+        rainfall_source = "Open-Meteo"
+
+    state_boundary = get_state_boundary(lat, lon)
+    state_name = _get_state_name(state_boundary)
+    flood_baseline = get_flood_baseline(state_name, lat, lon)
+    risk_result = calculate_risk(lat, lon, rainfall, flood_baseline)
+
+    if risk_result["status"] == "error":
+        return _with_trace(risk_result, request)
+
+    alerts = generate_alerts(risk_result["hazards"])
+    sms_text = build_farmer_sms_message(alerts, state_name=state_name)
+    sms_result = send_sms(phone_number, sms_text)
+
+    return {
+        "status": "success",
+        "location": {
+            "latitude": lat,
+            "longitude": lon,
+        },
+        "rainfall": {
+            "value_mm_per_hour": rainfall,
+            "source": rainfall_source,
+        },
+        "risk": risk_result["risk"],
+        "state": state_name,
+        "alerts": alerts,
+        "sms": {
+            "phone_number": normalize_phone_number(phone_number),
+            "message": sms_text,
+            "delivery": sms_result,
+        },
     }

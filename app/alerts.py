@@ -35,3 +35,38 @@ def generate_alerts(hazards):
         })
 
     return alerts
+
+
+def build_farmer_sms_message(alerts, state_name=None):
+    """
+    Create a compact, farmer-friendly SMS message from the generated alerts.
+    Picks the most severe alert and keeps the content concise enough for a
+    mobile SMS.
+    """
+    if not alerts:
+        return "No active hazard alert in your area."
+
+    severity_order = ["LOW", "MODERATE", "HIGH", "VERY_HIGH", "EXTREME"]
+    highest_severity = "UNKNOWN"
+    selected_message = None
+
+    for alert in alerts:
+        if not isinstance(alert, dict):
+            continue
+
+        severity = str(alert.get("severity", "UNKNOWN")).upper()
+        if severity in severity_order:
+            current_index = severity_order.index(severity)
+            highest_index = severity_order.index(highest_severity) if highest_severity in severity_order else -1
+            if current_index > highest_index:
+                highest_severity = severity
+                selected_message = alert.get("message") or alert.get("type") or "Alert"
+
+    if selected_message is None:
+        selected_message = alerts[0].get("message") or alerts[0].get("type") or "Alert"
+
+    location_prefix = f"{state_name}: " if state_name else ""
+    return (
+        f"{location_prefix}Alert level {highest_severity}. "
+        f"{selected_message} Please stay safe and follow local advisories."
+    )

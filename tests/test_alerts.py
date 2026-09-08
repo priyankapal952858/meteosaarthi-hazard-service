@@ -2,7 +2,8 @@
 Tests for app.alerts.
 """
 
-from app.alerts import generate_alerts
+from app.alerts import generate_alerts, build_farmer_sms_message
+from app.sms import normalize_phone_number, send_sms
 
 
 class TestGenerateAlerts:
@@ -54,3 +55,26 @@ class TestGenerateAlerts:
         assert len(result) == 2
         assert result[0]["message"] == "Heavy Rainfall detected with HIGH severity."
         assert result[1]["message"] == "Custom message."
+
+
+class TestFarmerSmsMessages:
+
+    def test_build_farmer_sms_message_uses_highest_severity(self):
+        alerts = [
+            {"type": "Heavy Rainfall", "severity": "MODERATE", "message": "Alert 1"},
+            {"type": "Flood Hazard", "severity": "VERY_HIGH", "message": "Alert 2"},
+        ]
+
+        result = build_farmer_sms_message(alerts, state_name="Maharashtra")
+
+        assert "Maharashtra" in result
+        assert "VERY_HIGH" in result
+        assert "Alert 2" in result
+
+    def test_normalize_phone_number_formats_indian_mobile(self):
+        assert normalize_phone_number("9876543210") == "+919876543210"
+        assert normalize_phone_number("+919876543210") == "+919876543210"
+
+    def test_send_sms_returns_disabled_when_no_provider_configured(self):
+        result = send_sms("9876543210", "Test alert", provider="fast2sms", api_key=None)
+        assert result["status"] == "disabled"
